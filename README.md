@@ -1,2 +1,12 @@
-# project1-soict
-Project for Project 1 course - SOICT
+# Project I
+- Project for Project 1 course - SOICT
+### 1. Topic name:
+Programming and building a program to collect System Information 
+
+### 2. Describe:
+- Collect information about RAM, CPU, Process, Network traffic, etc.
+- Works on both Windows and Linux
+
+### 3. Member:
+- Dao Minh Quang 
+- Vu Duc Thang
