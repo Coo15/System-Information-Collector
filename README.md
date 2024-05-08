@@ -1,4 +1,4 @@
-# Project I
+# Project I: System Information Collector
 - Project for Project 1 course - SOICT
 ### 1. Topic name:
 Programming and building a program to collect System Information 
