@@ -1,5 +1,5 @@
-# Project I: System Information Collector
-- Project for Project 1 course - SOICT
+# System Information Collector
+A project for Project 1 course of SoICT - HUST
 ### 1. Topic:
 Programming and building a program to collect System Information 
 
@@ -7,6 +7,6 @@ Programming and building a program to collect System Information
 - Collect information about RAM, CPU, Process, Network traffic, etc.
 - Works on both Windows and Linux
 
-### 3. Member:
-- Dao Minh Quang 
-- Vu Duc Thang
+### 3. Our team:
+- Dao Minh Quang - 20225552 - quang.dm225552@sis.hust.edu.vn
+- Vu Duc Thang - 20225553 - thang.vd225553@sis.hust.edu.vn
