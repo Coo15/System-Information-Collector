@@ -4,7 +4,13 @@
  */
 
 
+import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import oshi.SystemInfo;
 import oshi.hardware.ComputerSystem;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -15,25 +21,29 @@ import oshi.software.os.OperatingSystem;
  *
  * @author ADMIN
  */
-public class Services {
+public class Services extends JPanel{
     private SystemInfo si = new SystemInfo();
+    private String[] columnNames = {"Name", "PID", "State"};
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private JScrollPane sp;
     
     public Services() {
         HardwareAbstractionLayer hardware = si.getHardware();
         OperatingSystem operatingSystem = si.getOperatingSystem();
         ComputerSystem computerSystem = hardware.getComputerSystem();
         
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
+        sp = new JScrollPane(table);
+        
+        setLayout(new BorderLayout());
+        add(sp, BorderLayout.CENTER);
+        tableModel.setRowCount(0);
+        
         List<OSService> services = operatingSystem.getServices();
-        StringBuilder info;
-        System.out.println("Name - PID - State");
         for (OSService service : services) {
-            info = new StringBuilder();
-            
-            info.append(service.getName());
-            info.append(" - ").append(service.getProcessID());
-            info.append(" - ").append(service.getState());
-            
-            System.out.println(info.toString());
+            tableModel.addRow(new Object[]{service.getName(),service.getProcessID(),service.getState()});
         }
     }
 }
