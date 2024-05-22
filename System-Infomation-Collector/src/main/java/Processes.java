@@ -9,16 +9,25 @@
  * @author ADMIN
  */
 
+import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import oshi.SystemInfo;
 import oshi.hardware.ComputerSystem;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
-public class Processes {
+public class Processes extends JPanel{
     private SystemInfo si = new SystemInfo();
-    
+    private String[] columnNames = {"Name", "CPU", "MEMORY", "PID","PPID", "User", "Architecture","State"};
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private JScrollPane sp;
     
     public Processes() {
         HardwareAbstractionLayer hardware = si.getHardware();
@@ -27,19 +36,17 @@ public class Processes {
         
         List<OSProcess> processes = operatingSystem.getProcesses();
         
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
+        sp = new JScrollPane(table);
         
-        System.out.println("Name - CPU - MEMORY - PID - PPID - User - Architecture - State");
+        setLayout(new BorderLayout());
+        add(sp, BorderLayout.CENTER);
+        tableModel.setRowCount(0);
+        
         for (OSProcess p : processes) {
-            StringBuilder info = new StringBuilder();
-            info.append(p.getName());
-            info.append(" - ").append(p.getProcessCpuLoadCumulative());
-            info.append(" - ").append(p.getResidentSetSize());
-            info.append(" - ").append(p.getProcessID());
-            info.append(" - ").append(p.getParentProcessID());
-            info.append(" - ").append(p.getUser());
-            info.append(" - ").append(p.getBitness());
-            info.append(" - ").append(p.getState());
-            System.out.println(info.toString());
+            tableModel.addRow(new Object[]{p.getName(),p.getProcessCpuLoadCumulative(),p.getResidentSetSize(),p.getProcessID(),p.getParentProcessID(),p.getUser(),p.getBitness(),p.getState()});
+            
         }
     }
     

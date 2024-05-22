@@ -10,14 +10,17 @@
  */
 
 import cn.hutool.core.io.unit.DataSizeUtil;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import org.apache.commons.lang3.StringUtils;
 import oshi.hardware.*;
 import oshi.SystemInfo;
 import oshi.software.os.*;
 
-public class SystemOverview {
+public class SystemOverview extends JPanel{
     private SystemInfo si = new SystemInfo();
     
     public SystemOverview() {
@@ -25,19 +28,40 @@ public class SystemOverview {
         OperatingSystem operatingSystem = si.getOperatingSystem();
         ComputerSystem computerSystem = hardware.getComputerSystem();
         
-        System.out.println("******");
+        String pcName = computerSystem.getManufacturer() + " " + computerSystem.getModel();
+        String os = operatingSystem.toString();
+        String cpu = hardware.getProcessor().getProcessorIdentifier().getName();
+        String memory = infoMemory(hardware.getMemory());
+        String graphicsCards = infoGraphicsCard(hardware.getGraphicsCards());
+        String disk = infoDisk(hardware.getDiskStores());
+        String soundCard = infoSoundCard(hardware.getSoundCards());
+        String power = infoPower(hardware.getPowerSources());
         
-        System.out.println(computerSystem.getManufacturer() + " " + computerSystem.getModel());
-        System.out.println(operatingSystem.toString());
-        System.out.println("CPU: " + hardware.getProcessor().getProcessorIdentifier().getName());
-        System.out.println("Memory: " + infoMemory(hardware.getMemory()));
-        System.out.println("GraphicsCard: " + infoGraphicsCard(hardware.getGraphicsCards()));
-        System.out.println("Disk: " + infoDisk(hardware.getDiskStores()));
-        System.out.println("SoundCard: " + infoSoundCard(hardware.getSoundCards()));    
-        System.out.println("Power: " + infoPower(hardware.getPowerSources()));
+        setLayout(new GridLayout(8,2,0,0));
         
-        System.out.println("******");
+        add(new JLabel("Name: "));
+        add(new JLabel(pcName));
         
+        add(new JLabel("Operating System: "));
+        add(new JLabel(os));
+        
+        add(new JLabel("CPU: "));
+        add(new JLabel(cpu));
+        
+        add(new JLabel("Memory: "));
+        add(new JLabel(memory));
+        
+        add(new JLabel("Graphics Card: "));
+        add(new JLabel(graphicsCards));
+        
+        add(new JLabel("Disk: "));
+        add(new JLabel(disk));
+        
+        add(new JLabel("Soundcard: "));
+        add(new JLabel(soundCard));
+        
+        add(new JLabel("Power: "));
+        add(new JLabel(power));
         
     }
     
