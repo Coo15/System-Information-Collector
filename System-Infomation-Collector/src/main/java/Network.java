@@ -35,7 +35,7 @@ public class Network {
         for (NetworkIF iF : networkIFs) {
             info = new StringBuilder();
             
-            info.append(iF.getName());
+            info.append(iF.getName().substring(0,8));
             info.append(" - ").append(iF.getIndex());
             info.append(" - ").append(iF.getSpeed());
             info.append(" - ").append(formatIPaddr(iF.getIPv4addr()));
@@ -73,5 +73,9 @@ public class Network {
         }
         
         return ip.toString();
+    }
+    
+    public static void main(String[] args) {
+        new Network();
     }
 }
