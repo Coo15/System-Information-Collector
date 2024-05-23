@@ -87,8 +87,14 @@ public class Ethernet extends JPanel {
     private NetworkIF getActiveNetworkInterface() {
         java.util.List<NetworkIF> networkIFs = hal.getNetworkIFs();
         for (NetworkIF netIF : networkIFs) {
-            if ((netIF.getIPv4addr().length > 0) && (netIF.getName().substring(0,8).equals("ethernet"))) {
-                return netIF;
+            if ((netIF.getIPv4addr().length > 0)) {
+                if (netIF.getName().length() < 8 ) {
+                } else {
+                    return null;
+                }
+                if (netIF.getName().substring(0,8).equals("ethernet")) {
+                    return netIF;
+                }
             }
         }
         return null;
