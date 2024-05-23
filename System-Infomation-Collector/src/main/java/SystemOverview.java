@@ -10,11 +10,22 @@
  */
 
 import cn.hutool.core.io.unit.DataSizeUtil;
-import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.apache.commons.lang3.StringUtils;
 import oshi.hardware.*;
 import oshi.SystemInfo;
@@ -37,32 +48,63 @@ public class SystemOverview extends JPanel{
         String soundCard = infoSoundCard(hardware.getSoundCards());
         String power = infoPower(hardware.getPowerSources());
         
-        setLayout(new GridLayout(8,2,0,0));
+        setLayout(new BorderLayout());
         
-        add(new JLabel("Name: "));
-        add(new JLabel(pcName));
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.X_AXIS));
         
-        add(new JLabel("Operating System: "));
-        add(new JLabel(os));
+        JLabel pcLabel = new JLabel(pcName);
+        pcLabel.setFont(new Font(pcLabel.getFont().getName(), Font.PLAIN, 50));
+        pcLabel.setForeground(Color.black);
+
+        northPanel.add(Box.createRigidArea(new Dimension(10,10)));
+        northPanel.add(pcLabel);
+        northPanel.add(Box.createHorizontalGlue());
+        northPanel.add(Box.createRigidArea(new Dimension(10,10)));
         
-        add(new JLabel("CPU: "));
-        add(new JLabel(cpu));
+        add(northPanel, BorderLayout.NORTH);
         
-        add(new JLabel("Memory: "));
-        add(new JLabel(memory));
-        
-        add(new JLabel("Graphics Card: "));
-        add(new JLabel(graphicsCards));
-        
-        add(new JLabel("Disk: "));
-        add(new JLabel(disk));
-        
-        add(new JLabel("Soundcard: "));
-        add(new JLabel(soundCard));
-        
-        add(new JLabel("Power: "));
-        add(new JLabel(power));
-        
+         JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridBagLayout());
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+
+        centerPanel.add(createLabelBlock("Operating System:", os), gbc);
+        centerPanel.add(createLabelBlock("CPU:", cpu), gbc);
+        centerPanel.add(createLabelBlock("Memory:", memory), gbc);
+        centerPanel.add(createLabelBlock("Graphics Card:", graphicsCards), gbc);
+        centerPanel.add(createLabelBlock("Disk:", disk), gbc);
+        centerPanel.add(createLabelBlock("Sound Card:", soundCard), gbc);
+        centerPanel.add(createLabelBlock("Power:", power), gbc);
+
+        JScrollPane sp = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        add(sp, BorderLayout.CENTER);
+    }
+
+    private JPanel createLabelBlock(String labelText, String valueText) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font(label.getFont().getName(), Font.BOLD, 14));
+        label.setPreferredSize(new Dimension(150, 25));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel value = new JLabel(valueText);
+        value.setFont(new Font(value.getFont().getName(), Font.PLAIN, 14));
+        value.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(label);
+        panel.add(value);
+
+        return panel;
     }
     
     private String infoMemory(GlobalMemory memory) {

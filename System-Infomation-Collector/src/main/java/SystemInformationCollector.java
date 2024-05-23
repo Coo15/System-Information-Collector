@@ -27,7 +27,7 @@ public class SystemInformationCollector extends JFrame{
         add(tabs);
         
         setTitle("System Information Collector");
-        setSize(1024, 720);
+        setSize(1080, 920);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
