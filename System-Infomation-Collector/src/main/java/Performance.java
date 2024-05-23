@@ -8,7 +8,6 @@
  * @author ADMIN
  */
 
-import java.awt.*;
 import javax.swing.*;
 
 public class Performance extends JPanel{

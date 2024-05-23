@@ -10,7 +10,6 @@
  */
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,7 +51,14 @@ public class Processes extends JPanel{
         tableModel.setRowCount(0);
         List<OSProcess> processes = operatingSystem.getProcesses();
         for (OSProcess p : processes) {
-            tableModel.addRow(new Object[]{p.getName(),p.getProcessCpuLoadCumulative(),p.getResidentSetSize(),p.getProcessID(),p.getParentProcessID(),p.getUser(),p.getBitness(),p.getState()});
+            tableModel.addRow(new Object[]{p.getName(),
+                p.getProcessCpuLoadCumulative(),
+                p.getResidentSetSize(),
+                p.getProcessID(),
+                p.getParentProcessID(),
+                p.getUser(),
+                p.getBitness(),
+                p.getState()});
             
         }
     }

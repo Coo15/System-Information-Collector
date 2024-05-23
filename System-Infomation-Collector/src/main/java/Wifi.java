@@ -11,28 +11,23 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
-import oshi.software.os.OperatingSystem;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.*;
 
 public class Wifi extends JPanel {
     private JLabel downloadSpeedLabel;
     private JLabel uploadSpeedLabel;
     private JLabel ipv4Label;
+    private JLabel ipv6Label;
     private TimeSeries downloadSpeedSeries;
     private TimeSeries uploadSpeedSeries;
 
@@ -50,11 +45,13 @@ public class Wifi extends JPanel {
         downloadSpeedLabel = new JLabel();
         uploadSpeedLabel = new JLabel();
         ipv4Label = new JLabel();
+        ipv6Label = new JLabel();
 
         JPanel labelPanel = new JPanel(new GridLayout(0, 1));
         labelPanel.add(downloadSpeedLabel);
         labelPanel.add(uploadSpeedLabel);
         labelPanel.add(ipv4Label);
+        labelPanel.add(ipv6Label);
 
         add(labelPanel, BorderLayout.NORTH);
 
@@ -66,7 +63,7 @@ public class Wifi extends JPanel {
         JFreeChart speedChart = ChartFactory.createTimeSeriesChart(
             "Network Speed",
             "Time",
-            "Speed",
+            "Speed (MB/s)",
             dataset,
             true,
             true,
@@ -104,14 +101,14 @@ public class Wifi extends JPanel {
 
         networkIF.updateAttributes();
         
-        long downloadSpeed = networkIF.getBytesRecv();
-        long uploadSpeed = networkIF.getBytesSent();
+        long downloadSpeed = networkIF.getBytesRecv() / 1000000;
+        long uploadSpeed = networkIF.getBytesSent() / 1000000;
 
         SwingUtilities.invokeLater(() -> {
-            downloadSpeedLabel.setText(String.format("Download Speed: %d", downloadSpeed));
-            uploadSpeedLabel.setText(String.format("Upload Speed: %d", uploadSpeed));
+            downloadSpeedLabel.setText(String.format("Download Speed: %d MB/s", downloadSpeed));
+            uploadSpeedLabel.setText(String.format("Upload Speed: %d MB/s", uploadSpeed));
             ipv4Label.setText(String.format("IPv4 Address: %s", getIPv4Address(networkIF)));
-            ipv4Label.setText(String.format("IPv6 Address: %s", getIPv6Address(networkIF)));
+            ipv6Label.setText(String.format("IPv6 Address: %s", getIPv6Address(networkIF)));
 
             downloadSpeedSeries.addOrUpdate(new Second(), downloadSpeed);
             uploadSpeedSeries.addOrUpdate(new Second(), uploadSpeed);
@@ -132,8 +129,8 @@ public class Wifi extends JPanel {
         if (ipv6Addresses.length > 0) {
             return ipv6Addresses[0];
         } else {
-            return "No IPv4 Address";
+            return "No IPv6 Address";
         }
     }
-
+ 
 }
