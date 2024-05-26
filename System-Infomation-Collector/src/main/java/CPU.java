@@ -11,7 +11,6 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import oshi.SystemInfo;
@@ -23,6 +22,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYAreaRenderer;
+import org.jfree.data.time.Millisecond;
+import org.jfree.data.xy.XYDataset;
 
 public class CPU extends JPanel {
 
@@ -52,15 +56,7 @@ public class CPU extends JPanel {
 
         cpuUsageSeries = new TimeSeries("CPU Usage");
         TimeSeriesCollection dataset = new TimeSeriesCollection(cpuUsageSeries);
-        JFreeChart cpuChart = ChartFactory.createTimeSeriesChart(
-            "CPU Usage Over Time",
-            "Time",
-            "Usage (%)",
-            dataset,
-            true,
-            true,
-            false
-        );
+        JFreeChart cpuChart = createChart(dataset);
 
         ChartPanel chartPanel = new ChartPanel(cpuChart);
         add(chartPanel, BorderLayout.CENTER);
@@ -74,23 +70,51 @@ public class CPU extends JPanel {
         }, 0, 1000);
     }
 
+    private JFreeChart createChart(XYDataset dataset) {
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+            "CPU Usage Over Time",
+            "Time",
+            "Usage (%)",
+            dataset,
+            true,
+            true,
+            false
+        );
+
+        XYPlot plot = chart.getXYPlot();
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        plot.setRenderer(renderer);
+
+        // Set the range of the Y-axis to 0-100%
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setRange(0.0, 100.0);
+
+        return chart;
+    }
+
     private void updateCpuData() {
         long[] frequencies = processor.getCurrentFreq();
         long currentFreq = 0;
         if (frequencies.length > 0) {
-            currentFreq = frequencies[0]; 
+            currentFreq = frequencies[0];
         }
-        double currentFreqMHz = currentFreq / 1000000000.0; 
+        double currentFreqMHz = currentFreq / 1000000000.0;
 
         long[] loadTicks = processor.getSystemCpuLoadTicks();
-        Util.sleep(1000); 
+        Util.sleep(1000);
         double load = processor.getSystemCpuLoadBetweenTicks(loadTicks) * 100;
 
         // Update labels
         SwingUtilities.invokeLater(() -> {
-            frequencyLabel.setText(String.format("Current Frequency: %.2f MHz", currentFreqMHz));
+            frequencyLabel.setText(String.format("Current Frequency: %.2f GHz", currentFreqMHz));
             usageLabel.setText(String.format("Usage: %.2f%%", load));
-            cpuUsageSeries.addOrUpdate(new Second(), load);
+            Millisecond now = new Millisecond();
+            cpuUsageSeries.addOrUpdate(now, load);
+
+            // Remove data points older than 30 seconds
+            while (cpuUsageSeries.getItemCount() > 0 && cpuUsageSeries.getDataItem(0).getPeriod().getFirstMillisecond() < now.getFirstMillisecond() - 30000) {
+                cpuUsageSeries.delete(0, 0);
+            }
         });
     }
 }
