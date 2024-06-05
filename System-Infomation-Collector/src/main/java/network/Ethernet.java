@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package network;
 
-/**
- *
- * @author ADMIN
- */
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,7 +16,7 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Wifi extends JPanel {
+public class Ethernet extends JPanel {
     private JLabel downloadSpeedLabel;
     private JLabel uploadSpeedLabel;
     private JLabel ipv4Label;
@@ -35,7 +28,7 @@ public class Wifi extends JPanel {
     private HardwareAbstractionLayer hal;
     private NetworkIF networkIF;
 
-    public Wifi() {
+    public Ethernet() {
         systemInfo = new SystemInfo();
         hal = systemInfo.getHardware();
         networkIF = getActiveNetworkInterface();
@@ -63,7 +56,7 @@ public class Wifi extends JPanel {
         JFreeChart speedChart = ChartFactory.createTimeSeriesChart(
             "Network Speed",
             "Time",
-            "Speed (MB/s)",
+            "Speed",
             dataset,
             true,
             true,
@@ -111,8 +104,8 @@ public class Wifi extends JPanel {
         long uploadSpeed = networkIF.getBytesSent() / 1000000;
 
         SwingUtilities.invokeLater(() -> {
-            downloadSpeedLabel.setText(String.format("Download Speed: %d MB/s", downloadSpeed));
-            uploadSpeedLabel.setText(String.format("Upload Speed: %d MB/s", uploadSpeed));
+            downloadSpeedLabel.setText(String.format("Download Speed: %d", downloadSpeed));
+            uploadSpeedLabel.setText(String.format("Upload Speed: %d", uploadSpeed));
             ipv4Label.setText(String.format("IPv4 Address: %s", getIPv4Address(networkIF)));
             ipv6Label.setText(String.format("IPv6 Address: %s", getIPv6Address(networkIF)));
 
@@ -138,5 +131,5 @@ public class Wifi extends JPanel {
             return "No IPv6 Address";
         }
     }
- 
 }
+

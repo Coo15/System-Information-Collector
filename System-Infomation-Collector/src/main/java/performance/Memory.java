@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package performance;
 
-/**
- *
- * @author ADMIN
- */
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -82,10 +75,9 @@ public class Memory extends JPanel {
 
         XYPlot plot = chart.getXYPlot();
         XYAreaRenderer renderer = new XYAreaRenderer();
-        renderer.setSeriesPaint(0, new Color(0, 0, 255, 128)); // Semi-transparent blue
+        renderer.setSeriesPaint(0, new Color(0, 0, 255, 128)); 
         plot.setRenderer(renderer);
 
-        // Set the range of the Y-axis to 0-100%
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setRange(0.0, 100.0);
 
@@ -100,11 +92,10 @@ public class Memory extends JPanel {
 
         SwingUtilities.invokeLater(() -> {
             usageLabel.setText(String.format("Usage: %.2f GB", usedMemory / (1024.0 * 1024 * 1024)));
-            maxMemoryLabel.setText(String.format("Max Memory: %.2f GB", totalMemory / (1024.0 * 1024 * 1024)));
             availableMemoryLabel.setText(String.format("Available Memory: %.2f GB", availableMemory / (1024.0 * 1024 * 1024)));
+            maxMemoryLabel.setText(String.format("Max Memory: %.2f GB", totalMemory / (1024.0 * 1024 * 1024)));
             memoryUsageSeries.addOrUpdate(new Second(), usagePercentage);
 
-            // Remove data points older than 1 minute
             while (memoryUsageSeries.getItemCount() > 0 && memoryUsageSeries.getDataItem(0).getPeriod().getFirstMillisecond() < new Second().getFirstMillisecond() - 60000) {
                 memoryUsageSeries.delete(0, 0);
             }

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package test;
 
 
 import java.util.Arrays;
@@ -17,11 +14,11 @@ import oshi.software.os.OperatingSystem;
  *
  * @author ADMIN
  */
-public class Network {
+public class NetworkTest {
     private SystemInfo si = new SystemInfo();
     
     
-    public Network() {
+    public NetworkTest() {
         HardwareAbstractionLayer hardware = si.getHardware();
         OperatingSystem operatingSystem = si.getOperatingSystem();
         ComputerSystem computerSystem = hardware.getComputerSystem();
@@ -35,7 +32,7 @@ public class Network {
         for (NetworkIF iF : networkIFs) {
             info = new StringBuilder();
             
-            info.append(iF.getName().substring(8,10));
+            info.append(iF.getName());
             info.append(" - ").append(iF.getIndex());
             info.append(" - ").append(iF.getSpeed());
             info.append(" - ").append(formatIPaddr(iF.getIPv4addr()));
@@ -76,6 +73,6 @@ public class Network {
     }
     
     public static void main(String[] args) {
-        new Network();
+        new NetworkTest();
     }
 }
