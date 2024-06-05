@@ -1,12 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package tabs;
 
-/**
- *
- * @author ADMIN
- */
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import oshi.SystemInfo;
@@ -34,7 +28,6 @@ public class Startup extends JPanel {
         JScrollPane scrollPane = new JScrollPane(startupTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Fetch and display startup applications
         fetchStartupApplications();
     }
 
@@ -52,7 +45,6 @@ public class Startup extends JPanel {
 
     private void fetchWindowsStartupApplications() {
         try {
-            // Using WMIC to fetch startup items
             Process process = Runtime.getRuntime().exec("wmic startup get Caption, Command");
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
@@ -75,7 +67,6 @@ public class Startup extends JPanel {
 
     private void fetchLinuxStartupApplications() {
         try {
-            // Check common startup directories
             String[] directories = {"/etc/init.d/", "~/.config/autostart/"};
             for (String dir : directories) {
                 Process process = Runtime.getRuntime().exec("ls " + dir);

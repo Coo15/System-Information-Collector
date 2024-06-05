@@ -1,15 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
+package main;
 
 
-/**
- *
- * @author QUANG
- */
-
+import tabs.Network;
+import tabs.Startup;
+import tabs.Services;
+import tabs.SystemOverview;
+import tabs.Processes;
 import java.awt.*;
 import javax.swing.*;
+import tabs.Performance;
 
 public class SystemInformationCollector extends JFrame{
     
@@ -18,16 +17,17 @@ public class SystemInformationCollector extends JFrame{
         
         JTabbedPane tabs = new JTabbedPane();
         
-        tabs.addTab("Overview", new SystemOverview());
         tabs.addTab("Performance", new Performance());
+        tabs.addTab("Network", new Network());
         tabs.addTab("Processes", new Processes());
         tabs.addTab("Services", new Services());
         tabs.addTab("Startup services", new Startup());
-                
+        tabs.addTab("Overview", new SystemOverview());
+        
         add(tabs);
         
         setTitle("System Information Collector");
-        setSize(1080, 920);
+        setSize(1280, 960);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

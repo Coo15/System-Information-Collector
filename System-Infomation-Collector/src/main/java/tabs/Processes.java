@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package tabs;
 
-
-/**
- *
- * @author ADMIN
- */
 
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
@@ -57,7 +49,6 @@ public class Processes extends JPanel {
     private HardwareAbstractionLayer hardware = si.getHardware();
     private OperatingSystem operatingSystem = si.getOperatingSystem();
 
-    // Store the previous ticks for CPU calculation
     private Map<Integer, OSProcess> previousProcessMap = new HashMap<>();
 
     public Processes() {
@@ -68,7 +59,6 @@ public class Processes extends JPanel {
         setLayout(new BorderLayout());
         add(sp, BorderLayout.CENTER);
 
-        // Add sorting functionality
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
         table.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -85,7 +75,6 @@ public class Processes extends JPanel {
             }
         });
 
-        // Add mouse listener for right-click context menu
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -118,7 +107,7 @@ public class Processes extends JPanel {
     }
 
     private void killProcess(int row) {
-        int pid = (int) table.getValueAt(row, 3); // Get PID from the table
+        int pid = (int) table.getValueAt(row, 3); 
         boolean success = executeKillCommand(pid);
         if (success) {
             JOptionPane.showMessageDialog(this, "Process killed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -131,7 +120,7 @@ public class Processes extends JPanel {
         String osName = System.getProperty("os.name").toLowerCase();
         String command;
         if (osName.contains("win")) {
-            command = "taskkill /PID " + pid;
+            command = "taskkill /F /PID " + pid;
         } else {
             command = "kill -9 " + pid;
         }
@@ -157,11 +146,9 @@ public class Processes extends JPanel {
             long memoryInBytes = process.getResidentSetSize();
             long memoryInMB = memoryInBytes / (1024 * 1024);
 
-            // Cap the CPU usage to 100% per core and exclude the "idle" process
             int logicalProcessorCount = hardware.getProcessor().getLogicalProcessorCount();
             cpuLoad = Math.min(cpuLoad, 100.0 * logicalProcessorCount);
 
-            // Exclude "idle" process by checking if the process name contains "idle"
             if (!process.getName().toLowerCase().contains("idle")) {
                 tableModel.addRow(new Object[]{
                         process.getName(),
