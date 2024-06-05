@@ -56,7 +56,7 @@ public class Ethernet extends JPanel {
         JFreeChart speedChart = ChartFactory.createTimeSeriesChart(
             "Network Speed",
             "Time",
-            "Speed",
+            "Speed (MB/s)",
             dataset,
             true,
             true,
@@ -81,12 +81,13 @@ public class Ethernet extends JPanel {
         java.util.List<NetworkIF> networkIFs = hal.getNetworkIFs();
         for (NetworkIF netIF : networkIFs) {
             if ((netIF.getIPv4addr().length > 0)) {
-                if (netIF.getName().length() < 8 ) {
+                String osName = System.getProperty("os.name").toLowerCase();
+                if (osName.contains("win")) {
+                    if (netIF.getName().substring(0,8).equals("ethernet")) {
+                        return netIF;
+                    }
                 } else {
-                    return null;
-                }
-                if (netIF.getName().substring(0,8).equals("ethernet")) {
-                    return netIF;
+                    
                 }
             }
         }
