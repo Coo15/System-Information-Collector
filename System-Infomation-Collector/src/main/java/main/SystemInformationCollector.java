@@ -1,11 +1,7 @@
 package main;
 
 
-import tabs.Network;
-import tabs.Startup;
-import tabs.Services;
-import tabs.SystemOverview;
-import tabs.Processes;
+import tabs.*;
 import java.awt.*;
 import javax.swing.*;
 import tabs.Performance;
@@ -22,6 +18,10 @@ public class SystemInformationCollector extends JFrame{
         tabs.addTab("Processes", new Processes());
         tabs.addTab("Services", new Services());
         tabs.addTab("Startup services", new Startup());
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            tabs.addTab("Cron", new CronTab());
+        }
         tabs.addTab("Overview", new SystemOverview());
         
         add(tabs);

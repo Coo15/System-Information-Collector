@@ -147,12 +147,4 @@ public class CPU extends JPanel {
             }
         });
     }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("CPU Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new CPU());
-        frame.setVisible(true);
-    }
 }
