@@ -1,10 +1,10 @@
 package performance;
 
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.data.time.Millisecond;
@@ -23,17 +23,13 @@ import java.util.TimerTask;
 
 public class CPU extends JPanel {
 
-    private JLabel frequencyLabel;
-    private JLabel usageLabel;
-    private TimeSeries cpuUsageSeries;
+    private TimeSeries[] coreUsageSeries;
+    private JLabel[] coreFrequencyLabels;
 
     private SystemInfo systemInfo;
     private HardwareAbstractionLayer hal;
     private CentralProcessor processor;
     private JPanel corePanel;
-    private JLabel[] coreUsageLabels;
-    private JLabel[] coreFrequencyLabels;
-    
     private long[][] previousTicks;
 
     public CPU() {
@@ -43,41 +39,36 @@ public class CPU extends JPanel {
 
         setLayout(new BorderLayout());
 
-        frequencyLabel = new JLabel();
-        usageLabel = new JLabel();
-
-        JPanel labelPanel = new JPanel(new GridLayout(0, 1));
-        labelPanel.add(frequencyLabel);
-        labelPanel.add(usageLabel);
-
-        add(labelPanel, BorderLayout.NORTH);
-
-        cpuUsageSeries = new TimeSeries("CPU Usage");
-        TimeSeriesCollection dataset = new TimeSeriesCollection(cpuUsageSeries);
-        JFreeChart cpuChart = createChart(dataset);
-
-        ChartPanel chartPanel = new ChartPanel(cpuChart);
-        add(chartPanel, BorderLayout.CENTER);
-
         int logicalProcessorCount = processor.getLogicalProcessorCount();
-        coreUsageLabels = new JLabel[logicalProcessorCount];
+        coreUsageSeries = new TimeSeries[logicalProcessorCount];
         coreFrequencyLabels = new JLabel[logicalProcessorCount];
-        corePanel = new JPanel();
-        corePanel.setLayout(new BoxLayout(corePanel, BoxLayout.Y_AXIS));
+        corePanel = new JPanel(new GridLayout(0, 4, 10, 10));  // 4 charts per row
+
         for (int i = 0; i < logicalProcessorCount; i++) {
-            JPanel coreInfoPanel = new JPanel(new GridLayout(0, 1));
-            coreUsageLabels[i] = new JLabel();
+            JPanel coreInfoPanel = new JPanel(new BorderLayout());
+
+            // Create TimeSeries and Chart for each core
+            coreUsageSeries[i] = new TimeSeries("CPU " + (i + 1) + " Usage");
+            TimeSeriesCollection dataset = new TimeSeriesCollection(coreUsageSeries[i]);
+            JFreeChart coreChart = createChart(dataset);
+            ChartPanel chartPanel = new ChartPanel(coreChart);
+            chartPanel.setPreferredSize(new Dimension(200, 150));  // Set preferred size for each chart panel
+            coreInfoPanel.add(chartPanel, BorderLayout.CENTER);
+
+            // Add frequency label below the chart
             coreFrequencyLabels[i] = new JLabel();
-            coreInfoPanel.add(new JLabel("CPU " + (i + 1)));
-            coreInfoPanel.add(coreUsageLabels[i]);
-            coreInfoPanel.add(coreFrequencyLabels[i]);
+            coreFrequencyLabels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            coreInfoPanel.add(coreFrequencyLabels[i], BorderLayout.SOUTH);
+
             corePanel.add(coreInfoPanel);
-            corePanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         JScrollPane scrollPane = new JScrollPane(corePanel);
-        scrollPane.setPreferredSize(new Dimension(200, 0));
-        add(scrollPane, BorderLayout.WEST);
+        scrollPane.setPreferredSize(new Dimension(800, 600));
+        add(scrollPane, BorderLayout.CENTER);
+        
+        JPanel cpuInfoPanel = createCpuInfoPanel();
+        add(cpuInfoPanel, BorderLayout.NORTH);
 
         previousTicks = processor.getProcessorCpuLoadTicks();
 
@@ -89,14 +80,32 @@ public class CPU extends JPanel {
             }
         }, 0, 1000);
     }
+    
+    private JPanel createCpuInfoPanel() {
+        JPanel cpuInfoPanel = new JPanel(new GridLayout(0,2));
+
+        cpuInfoPanel.add(new JLabel("Name:" + processor.getProcessorIdentifier().getName()));
+
+        cpuInfoPanel.add(new JLabel("Base Frequency:" + String.format("%.2f GHz", processor.getProcessorIdentifier().getVendorFreq() / 1e9)));
+
+        cpuInfoPanel.add(new JLabel("Identifier:" + processor.getProcessorIdentifier().getIdentifier()));
+        
+        cpuInfoPanel.add(new JLabel("Physical Processor Count:" + String.valueOf(processor.getPhysicalProcessorCount())));
+
+        cpuInfoPanel.add(new JLabel("ProcessorID:" + processor.getProcessorIdentifier().getProcessorID()));
+
+        cpuInfoPanel.add(new JLabel("Logical Processor Count:" + String.valueOf(processor.getLogicalProcessorCount())));
+
+        return cpuInfoPanel;
+    }
 
     private JFreeChart createChart(XYDataset dataset) {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
-            "CPU Usage Over Time",
-            "Time",
-            "Usage (%)",
+            "",
+            "",
+            "",
             dataset,
-            true,
+            false,
             true,
             false
         );
@@ -109,6 +118,10 @@ public class CPU extends JPanel {
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setRange(0.0, 100.0);
 
+        // Remove x-axis values
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setTickLabelsVisible(false);
+
         return chart;
     }
 
@@ -118,32 +131,21 @@ public class CPU extends JPanel {
         double[] perCoreLoad = processor.getProcessorCpuLoadBetweenTicks(previousTicks);
         previousTicks = newTicks;
 
-        long currentFreq = 0;
-        if (frequencies.length > 0) {
-            currentFreq = frequencies[0];
-        }
-        double currentFreqGHz = currentFreq / 1000000000.0;
-
-        long[] loadTicks = processor.getSystemCpuLoadTicks();
-        Util.sleep(1000);
-        double load = processor.getSystemCpuLoadBetweenTicks(loadTicks) * 100;
-
-        // Update labels
+        // Update labels and charts
         SwingUtilities.invokeLater(() -> {
-            frequencyLabel.setText(String.format("Current Frequency: %.2f GHz", currentFreqGHz));
-            usageLabel.setText(String.format("Usage: %.2f%%", load));
             Millisecond now = new Millisecond();
-            cpuUsageSeries.addOrUpdate(now, load);
 
-            while (cpuUsageSeries.getItemCount() > 0 && cpuUsageSeries.getDataItem(0).getPeriod().getFirstMillisecond() < now.getFirstMillisecond() - 30000) {
-                cpuUsageSeries.delete(0, 0);
-            }
-
-            for (int i = 0; i < coreUsageLabels.length; i++) {
-                int usagePercent = (int) (perCoreLoad[i] * 100);
+            for (int i = 0; i < coreUsageSeries.length; i++) {
                 double coreFreqGHz = frequencies[i] / 1000000000.0;
-                coreUsageLabels[i].setText(String.format("Usage: %d%%", usagePercent));
-                coreFrequencyLabels[i].setText(String.format("Frequency: %.2f GHz", coreFreqGHz));
+                int usagePercent = (int) (perCoreLoad[i] * 100);
+
+                coreUsageSeries[i].addOrUpdate(now, usagePercent);
+                coreFrequencyLabels[i].setText(String.format("Cpu %d: %.2f GHz", i,coreFreqGHz));
+
+                // Remove data points older than 30 seconds
+                while (coreUsageSeries[i].getItemCount() > 0 && coreUsageSeries[i].getDataItem(0).getPeriod().getFirstMillisecond() < now.getFirstMillisecond() - 30000) {
+                    coreUsageSeries[i].delete(0, 0);
+                }
             }
         });
     }
