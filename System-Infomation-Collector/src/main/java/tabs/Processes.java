@@ -1,6 +1,5 @@
 package tabs;
 
-
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -61,6 +60,10 @@ public class Processes extends JPanel {
 
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
+
+        // Set initial sorting to CPU column (index 1) in descending order
+        sorter.setSortKeys(List.of(new RowSorter.SortKey(1, SortOrder.DESCENDING)));
+
         table.getTableHeader().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -169,5 +172,3 @@ public class Processes extends JPanel {
     }
 
 }
-
-

@@ -1,6 +1,5 @@
 package network;
 
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -28,6 +27,10 @@ public class Wifi extends JPanel {
     private HardwareAbstractionLayer hal;
     private NetworkIF networkIF;
 
+    private long previousBytesRecv = 0;
+    private long previousBytesSent = 0;
+    private long previousTimestamp = 0;
+
     public Wifi() {
         systemInfo = new SystemInfo();
         hal = systemInfo.getHardware();
@@ -54,13 +57,13 @@ public class Wifi extends JPanel {
         dataset.addSeries(downloadSpeedSeries);
         dataset.addSeries(uploadSpeedSeries);
         JFreeChart speedChart = ChartFactory.createTimeSeriesChart(
-            "Network Speed",
-            "Time",
-            "Speed (MB/s)",
-            dataset,
-            true,
-            true,
-            false
+                "Network Speed",
+                "Time",
+                "Speed (kB/s)",
+                dataset,
+                true,
+                true,
+                false
         );
 
         ChartPanel chartPanel = new ChartPanel(speedChart);
@@ -80,17 +83,14 @@ public class Wifi extends JPanel {
     private NetworkIF getActiveNetworkInterface() {
         java.util.List<NetworkIF> networkIFs = hal.getNetworkIFs();
         for (NetworkIF netIF : networkIFs) {
-            if ((netIF.getIPv4addr().length > 0)) {
+            if (netIF.getIPv4addr().length > 0) {
                 String osName = System.getProperty("os.name").toLowerCase();
                 if (osName.contains("win")) {
-                    if (netIF.getName().substring(0,8).equals("wireless")) {
+                    if (netIF.getName().toLowerCase().contains("wireless")) {
                         return netIF;
                     }
                 } else {
-                    
                 }
-                
-                
             }
         }
         return null;
@@ -102,13 +102,29 @@ public class Wifi extends JPanel {
         }
 
         networkIF.updateAttributes();
-        
-        long downloadSpeed = networkIF.getBytesRecv() / 1000000;
-        long uploadSpeed = networkIF.getBytesSent() / 1000000;
+
+        long currentBytesRecv = networkIF.getBytesRecv();
+        long currentBytesSent = networkIF.getBytesSent();
+        long currentTimestamp = networkIF.getTimeStamp();
+
+        if (previousTimestamp == 0) {
+            previousBytesRecv = currentBytesRecv;
+            previousBytesSent = currentBytesSent;
+            previousTimestamp = currentTimestamp;
+            return;
+        }
+
+        long timeDiff = currentTimestamp - previousTimestamp;
+        long downloadSpeed = ((currentBytesRecv - previousBytesRecv) * 1000 / timeDiff) / 1024; 
+        long uploadSpeed = ((currentBytesSent - previousBytesSent) * 1000 / timeDiff) / 1024; 
+
+        previousBytesRecv = currentBytesRecv;
+        previousBytesSent = currentBytesSent;
+        previousTimestamp = currentTimestamp;
 
         SwingUtilities.invokeLater(() -> {
-            downloadSpeedLabel.setText(String.format("Download Speed: %d MB/s", downloadSpeed));
-            uploadSpeedLabel.setText(String.format("Upload Speed: %d MB/s", uploadSpeed));
+            downloadSpeedLabel.setText(String.format("Download Speed: %d kB/s", downloadSpeed));
+            uploadSpeedLabel.setText(String.format("Upload Speed: %d kB/s", uploadSpeed));
             ipv4Label.setText(String.format("IPv4 Address: %s", getIPv4Address(networkIF)));
             ipv6Label.setText(String.format("IPv6 Address: %s", getIPv6Address(networkIF)));
 
@@ -125,7 +141,7 @@ public class Wifi extends JPanel {
             return "No IPv4 Address";
         }
     }
-    
+
     private String getIPv6Address(NetworkIF networkIF) {
         String[] ipv6Addresses = networkIF.getIPv6addr();
         if (ipv6Addresses.length > 0) {
@@ -134,5 +150,4 @@ public class Wifi extends JPanel {
             return "No IPv6 Address";
         }
     }
- 
 }
