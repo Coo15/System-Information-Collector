@@ -1,4 +1,4 @@
-package tabs;
+package startup;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
