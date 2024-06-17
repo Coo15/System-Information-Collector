@@ -15,9 +15,9 @@ public class Startup extends JPanel {
         if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
             startupTabs.addTab("Cron", new CronTab());
         } else {
-            startupTabs.addTab("App", new App());
+            startupTabs.addTab("Task", new TaskSchedule());
         }
-        startupTabs.addTab("Task", new TaskSchedule());
+        startupTabs.addTab("App", new App());
         
         
         add(startupTabs, BorderLayout.CENTER);

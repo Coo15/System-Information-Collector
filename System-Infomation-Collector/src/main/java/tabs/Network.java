@@ -23,16 +23,22 @@ public class Network extends JPanel{
     public Network() {
         setLayout(new BorderLayout());
         JTabbedPane netTabs = new JTabbedPane();
+        String osName = System.getProperty("os.name").toLowerCase();
         
-        networkNameList = fetchNetworkCardDescriptions();
-        for (String name : networkNameList) {
+        if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
             for (NetworkIF networkIF: networkIFs) {
-                if (networkIF.getDisplayName().equalsIgnoreCase(name)) {
-                    netTabs.addTab(name, new NetworkIFTab(networkIF));
+                netTabs.addTab(networkIF.getName(), new NetworkIFTab(networkIF));
+            }
+        } else {
+            networkNameList = fetchNetworkCardDescriptions();
+            for (String name : networkNameList) {
+                for (NetworkIF networkIF: networkIFs) {
+                    if (networkIF.getDisplayName().equalsIgnoreCase(name)) {
+                        netTabs.addTab(name, new NetworkIFTab(networkIF));
+                    }
                 }
             }
         }
-        
         
         add(netTabs, BorderLayout.CENTER);
     }
