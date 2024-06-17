@@ -1,42 +1,16 @@
-package tabs;
+package network;
 
-
-import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import network.*;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import oshi.SystemInfo;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.NetworkIF;
 
-public class Network extends JPanel{
-    private SystemInfo systemInfo = new SystemInfo();
-    private HardwareAbstractionLayer hardware = systemInfo.getHardware();;
-    List<NetworkIF> networkIFs = hardware.getNetworkIFs(true);
-    
+public class NetworkName {
     private String networkNameList[];
     
-    public Network() {
-        setLayout(new BorderLayout());
-        JTabbedPane netTabs = new JTabbedPane();
-        
+    public NetworkName() {
         networkNameList = fetchNetworkCardDescriptions();
-        for (String name : networkNameList) {
-            for (NetworkIF networkIF: networkIFs) {
-                if (networkIF.getDisplayName().equalsIgnoreCase(name)) {
-                    netTabs.addTab(name, new NetworkIFTab(networkIF));
-                }
-            }
-        }
-        
-        
-        add(netTabs, BorderLayout.CENTER);
     }
-    
+
     private String[] fetchNetworkCardDescriptions() {
         ArrayList<String> descriptionsList = new ArrayList<>();
         

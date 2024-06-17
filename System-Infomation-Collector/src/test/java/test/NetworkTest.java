@@ -38,6 +38,8 @@ public class NetworkTest {
             info.append(" - ").append(formatIPaddr(iF.getIPv4addr()));
             info.append(" - ").append(formatIPaddr(iF.getIPv6addr()));
             info.append(" - ").append(iF.getMacaddr());
+            info.append(" - ").append(iF.getDisplayName());
+            info.append(" - ").append(iF.isKnownVmMacAddr());
             
             System.out.println(info.toString());
         }
