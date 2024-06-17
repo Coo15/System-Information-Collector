@@ -56,7 +56,7 @@ public class SystemOverview extends JPanel{
         
         add(northPanel, BorderLayout.NORTH);
         
-         JPanel centerPanel = new JPanel();
+        JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new GridBagLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         GridBagConstraints gbc = new GridBagConstraints();
