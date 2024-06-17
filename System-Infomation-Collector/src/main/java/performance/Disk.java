@@ -19,25 +19,44 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Disk extends JPanel {
-
     private TimeSeries readSeries;
     private TimeSeries writeSeries;
-
-    private SystemInfo systemInfo;
-    private List<HWDiskStore> diskStores;
+    private JPanel infoPanel;
+    private JLabel modelLabel = new JLabel();
+    private JLabel nameLabel = new JLabel();
+    private JLabel readLabel = new JLabel();
+    private JLabel writeLabel = new JLabel();
+    
+    private HWDiskStore diskStore;
 
     private long prevReadBytes = 0;
     private long prevWriteBytes = 0;
     private long prevTimeStamp = 0;
+    private long curReadBytes;
+    private long curWriteBytes;
+    private long curTimeStamp;
+    private double readSpeed;
+    private double writeSpeed;
+    private long timeDiff;
 
-    public Disk() {
-        systemInfo = new SystemInfo();
-        diskStores = systemInfo.getHardware().getDiskStores();
+    public Disk(HWDiskStore diskStore) {
+        this.diskStore = diskStore;
 
         setLayout(new BorderLayout());
+        
+        infoPanel = new JPanel(new GridLayout(0,1));
+        infoPanel.add(nameLabel);
+        infoPanel.add(modelLabel);
+        infoPanel.add(readLabel);
+        infoPanel.add(writeLabel);
+        
+        nameLabel.setText("Name: " + diskStore.getName());
+        modelLabel.setText("Model: " + diskStore.getModel());
+        
+        add(infoPanel, BorderLayout.NORTH);
 
-        readSeries = new TimeSeries("Read Speed (KB/s)");
-        writeSeries = new TimeSeries("Write Speed (KB/s)");
+        readSeries = new TimeSeries("Read Speed (kB/s)");
+        writeSeries = new TimeSeries("Write Speed (kB/s)");
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(readSeries);
@@ -61,7 +80,7 @@ public class Disk extends JPanel {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "Disk Read/Write Speeds",
                 "Time",
-                "Speed (KB/s)",
+                "Speed (kB/s)",
                 dataset,
                 true,
                 true,
@@ -79,15 +98,13 @@ public class Disk extends JPanel {
     }
 
     private void updateDiskData() {
-        long curReadBytes = 0;
-        long curWriteBytes = 0;
-        long curTimeStamp = System.currentTimeMillis();
+        
 
-        for (HWDiskStore diskStore : diskStores) {
-            diskStore.updateAttributes();
-            curReadBytes += diskStore.getReadBytes();
-            curWriteBytes += diskStore.getWriteBytes();
-        }
+        diskStore.updateAttributes();
+
+        curReadBytes = diskStore.getReadBytes();
+        curWriteBytes = diskStore.getWriteBytes();
+        curTimeStamp = diskStore.getTimeStamp();
 
         if (prevTimeStamp == 0) {
             prevReadBytes = curReadBytes;
@@ -96,26 +113,25 @@ public class Disk extends JPanel {
             return;
         }
 
-        long readDiff = curReadBytes - prevReadBytes;
-        long writeDiff = curWriteBytes - prevWriteBytes;
-        long timeDiff = curTimeStamp - prevTimeStamp;
-
-        double readSpeed = readDiff / (timeDiff / 1000.0) / 1024.0; // Convert to KB/s
-        double writeSpeed = writeDiff / (timeDiff / 1000.0) / 1024.0; // Convert to KB/s
-
-        Second now = new Second();
-        readSeries.addOrUpdate(now, readSpeed);
-        writeSeries.addOrUpdate(now, writeSpeed);
-
+        timeDiff = curTimeStamp - prevTimeStamp;
+        if (timeDiff == 0) {
+            readSpeed = 0;
+            writeSpeed = 0;
+        } else {
+            readSpeed = ((curReadBytes - prevReadBytes) * 1000 / timeDiff) / 1024; 
+            writeSpeed = ((curWriteBytes - prevWriteBytes) * 1000 / timeDiff) / 1024; 
+        }
+        
         prevReadBytes = curReadBytes;
         prevWriteBytes = curWriteBytes;
         prevTimeStamp = curTimeStamp;
 
-        while (readSeries.getItemCount() > 0 && readSeries.getDataItem(0).getPeriod().getFirstMillisecond() < now.getFirstMillisecond() - 60000) {
-            readSeries.delete(0, 0);
-        }
-        while (writeSeries.getItemCount() > 0 && writeSeries.getDataItem(0).getPeriod().getFirstMillisecond() < now.getFirstMillisecond() - 60000) {
-            writeSeries.delete(0, 0);
-        }
+        SwingUtilities.invokeLater(() -> {
+            readLabel.setText(String.format("Download Speed: %.2f kB/s", readSpeed));
+            writeLabel.setText(String.format("Upload Speed: %.2f kB/s", writeSpeed));
+
+            readSeries.addOrUpdate(new Second(), readSpeed);
+            writeSeries.addOrUpdate(new Second(), writeSpeed);
+        });
     }
 }
