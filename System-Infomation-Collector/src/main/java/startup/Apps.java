@@ -9,12 +9,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class App extends JPanel {
+public class Apps extends JPanel {
 
     private JTable startupTable;
     private DefaultTableModel tableModel;
 
-    public App() {
+    public Apps() {
         setLayout(new BorderLayout());
 
         // Create the table model with column names
@@ -97,13 +97,5 @@ public class App extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Startup Applications");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new App());
-        frame.setVisible(true);
     }
 }
