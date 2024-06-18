@@ -13,9 +13,11 @@ public class SystemInformationCollector extends JFrame {
         cp.setLayout(new BorderLayout());
         
         JMenuBar menu = new JMenuBar();
+        JMenu help = new JMenu("Help");
+        menu.add(help);
         
-        JMenu aboutMenu = new JMenu("About");
-        menu.add(aboutMenu);
+        JMenuItem aboutMenu = new JMenuItem("About");
+        help.add(aboutMenu);
         aboutMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame("About");

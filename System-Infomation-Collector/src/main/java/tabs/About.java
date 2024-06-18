@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class About extends JPanel {
-
+    
     public About() {
         setLayout(new BorderLayout());
 
@@ -29,6 +29,8 @@ public class About extends JPanel {
         add(aboutTextArea, BorderLayout.CENTER);
  
         setBorder(BorderFactory.createTitledBorder("About"));
+        
     }
+    
 
 }
