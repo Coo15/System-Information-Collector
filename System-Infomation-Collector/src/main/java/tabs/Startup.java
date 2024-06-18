@@ -3,7 +3,7 @@ package tabs;
 import startup.CronTab;
 import javax.swing.*;
 import java.awt.*;
-import startup.App;
+import startup.Apps;
 
 public class Startup extends JPanel {
     public Startup() {
@@ -17,7 +17,7 @@ public class Startup extends JPanel {
         } else {
             startupTabs.addTab("Task", new TaskSchedule());
         }
-        startupTabs.addTab("App", new App());
+        startupTabs.addTab("App", new Apps());
         
         
         add(startupTabs, BorderLayout.CENTER);

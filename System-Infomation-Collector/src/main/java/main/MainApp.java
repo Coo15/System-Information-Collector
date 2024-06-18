@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class SystemInformationCollector extends JFrame {
+public class MainApp extends JFrame {
 
-    public SystemInformationCollector() {
+    public MainApp() {
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
         
@@ -49,6 +49,6 @@ public class SystemInformationCollector extends JFrame {
     }
 
     public static void main(String[] args) {
-        new SystemInformationCollector();
+        new MainApp();
     }
 }
