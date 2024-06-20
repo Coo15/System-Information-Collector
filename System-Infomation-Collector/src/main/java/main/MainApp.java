@@ -21,7 +21,7 @@ public class MainApp extends JFrame {
         aboutMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame("About");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setSize(620, 360);
                 frame.add(new About());
                 frame.setLocationRelativeTo(null); 
