@@ -6,6 +6,9 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import java.text.ParseException;
+import net.redhogs.cronparser.*;
+
 public class CronTab extends JPanel {
 
     private JTable startupTable;
@@ -45,7 +48,7 @@ public class CronTab extends JPanel {
                 }
 
                 String schedule = String.join(" ", parts[0], parts[1], parts[2], parts[3], parts[4]);
-                
+                String formattedSchedule = CronExpressionDescriptor.getDescription(schedule);
                 String user = parts[5];
 
                 StringBuilder commandBuilder = new StringBuilder();
@@ -55,7 +58,7 @@ public class CronTab extends JPanel {
                 String command = commandBuilder.toString().trim();
 
 
-                tableModel.addRow(new Object[]{schedule, user, command});
+                tableModel.addRow(new Object[]{formattedSchedule, user, command});
             }
         } catch (Exception e) {
             e.printStackTrace();
