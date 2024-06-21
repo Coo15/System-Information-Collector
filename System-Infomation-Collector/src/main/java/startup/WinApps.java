@@ -13,11 +13,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Apps extends JPanel {
+public class WinApps extends JPanel {
     private JTable startupTable;
     private DefaultTableModel tableModel;
 
-    public Apps() {
+    public WinApps() {
         setLayout(new BorderLayout());
 
         // Create the table model with column names
