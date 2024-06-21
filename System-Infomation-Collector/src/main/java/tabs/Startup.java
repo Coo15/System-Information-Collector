@@ -1,9 +1,9 @@
 package tabs;
 
-import startup.CronTab;
+import startup.*;
 import javax.swing.*;
 import java.awt.*;
-import startup.Apps;
+
 
 public class Startup extends JPanel {
     public Startup() {
