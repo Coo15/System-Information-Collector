@@ -18,6 +18,7 @@ public class Startup extends JPanel {
         } else {
             startupTabs.addTab("App", new WinApps());
             startupTabs.addTab("Task", new TaskSchedule());
+            startupTabs.addTab("Startup Folder", new WinStartupFolder());
         }
         
         

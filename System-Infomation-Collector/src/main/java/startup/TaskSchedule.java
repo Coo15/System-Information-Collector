@@ -19,13 +19,18 @@ public class TaskSchedule extends JPanel {
 
     public TaskSchedule() {
         setLayout(new BorderLayout());
-
-        // Create the table model with column names
+        
         String[] columnNames = {"Name", "Description", "Publisher", "Path","Timestamp"};
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         startupTable = new JTable(tableModel);
+        startupTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        startupTable.setCellSelectionEnabled(true);
 
-        // Create a scroll pane for the table
         JScrollPane scrollPane = new JScrollPane(startupTable);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -43,9 +48,8 @@ public class TaskSchedule extends JPanel {
         List<String[]> entries = new ArrayList<>();
         Path tempDir = null;
         try {
-            // Create a temporary directory
             tempDir = Files.createTempDirectory("autoruns");
-            // Extract autorunsc.exe to the temporary directory
+
             Path autorunscPath = tempDir.resolve("autorunsc.exe");
             try (InputStream is = getClass().getClassLoader().getResourceAsStream("autorunsc.exe")) {
                 if (is == null) {
@@ -60,7 +64,7 @@ public class TaskSchedule extends JPanel {
             String line;
             List<String> appDetails = new ArrayList<>();
 
-            // Skip the first 8 lines directly
+            // Skip the first 8 lines 
             for (int i = 0; i < 8 && reader.readLine() != null; i++);
 
             while ((line = reader.readLine().trim()) != null) {

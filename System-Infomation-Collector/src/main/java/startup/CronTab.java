@@ -17,22 +17,25 @@ public class CronTab extends JPanel {
     public CronTab() {
         setLayout(new BorderLayout());
 
-        // Create the table model with column names
         String[] columnNames = {"Schedule", "User", "Command"};
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         startupTable = new JTable(tableModel);
+        startupTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        startupTable.setCellSelectionEnabled(true);
 
-        // Create a scroll pane for the table
         JScrollPane scrollPane = new JScrollPane(startupTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Fetch and display crontab entries
         fetchCrontabEntries();
     }
 
     private void fetchCrontabEntries() {
         try {
-            // Execute the crontab -l command to list crontab entries
             Process process = Runtime.getRuntime().exec("cat /etc/crontab");
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
