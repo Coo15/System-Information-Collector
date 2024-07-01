@@ -45,7 +45,7 @@ public class LinuxApps extends JPanel {
 
     private void fetchLinuxStartupApplications() {
         try {
-            String[] directories = {"/etc/init.d/", "~/.config/autostart/"};
+            String[] directories = {"/etc/init.d/", "~/.config/autostart/", "/etc/xdg/autostart"};
             for (String dir : directories) {
                 Process process = Runtime.getRuntime().exec("ls " + dir);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
