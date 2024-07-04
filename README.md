@@ -47,4 +47,4 @@ main/java
 | Vu Duc Thang      | 20225553    | thang.vd225553@sis.hust.edu.vn|
 
 ### 6. License
-Distributed under the MIT License. See [`LICENSE`][(https://github.com/Coo15/System-Information-Collector/blob/main/LICENSE)]for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/Coo15/System-Information-Collector/blob/main/LICENSE) for more information.
