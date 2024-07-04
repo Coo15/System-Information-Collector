@@ -40,6 +40,9 @@ main/java
     └── Network.java
 ```
 
+### 6. Download
+You can download the JAR file directly at the [Releases page](https://github.com/Coo15/System-Information-Collector/releases).
+
 ### 5. Our team:
 | Name              |  Student ID |  Email                        | 
 |-------------------|-------------|-------------------------------|
