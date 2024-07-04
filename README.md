@@ -12,6 +12,14 @@ Programming and building a program to collect System Information
 - View and manage (terminate) running processes.
 - Locate startup apps/processes/task in host system.
 
+### 4. Demo
+#### View CPU performance
+
+![CPU](https://github.com/Coo15/System-Information-Collector/assets/139579187/a8a5c8a4-0ac1-422f-99a0-ae4e3a7366f5)
+
+
+#### 
+
 ### 4. Code structure
 ```
 main/java
