@@ -1,18 +1,14 @@
 # System Information Collector
 A project for Project 1 course of SoICT - HUST
-### 1. Topic:
-Programming and building a program to collect System Information 
+### 1. Description:
+The System Information Collector is a versatile application designed to monitor and display critical system and hardware information on both Windows and Linux platforms. This application provides users with real-time insights into system performance metrics, including CPU, RAM, and disk usage, as well as network traffic details. It also offers a comprehensive view of running processes, services, and startup applications/tasks, along with detailed hardware information.
 
-### 2. Description:
-- Collect information about RAM, CPU, Process, Network traffic, etc.
-- Works on both Windows and Linux
-
-### 3. Features
+### 2. Features
 - View performance of hardware component: CPU, RAM, Disk, Network, etc.
 - View and manage (terminate) running processes.
 - Locate startup apps/processes/task in host system.
 
-### 4. Demo
+### 3. Demo
 #### View CPU performance
 ![CPU](https://github.com/Coo15/System-Information-Collector/assets/139579187/a8a5c8a4-0ac1-422f-99a0-ae4e3a7366f5)
 
@@ -28,8 +24,7 @@ Programming and building a program to collect System Information
 #### Startup
 ![Startup](https://github.com/Coo15/System-Information-Collector/assets/139579187/2e8f81c7-5c84-45a2-93bf-1e349fb9cca4)
 
-
-### 5. Code structure
+### 4. Code structure
 ```
 main/java
 ├── main
@@ -57,14 +52,14 @@ main/java
     └── Network.java
 ```
 
-### 6. Download
+### 5. Download
 You can download the JAR file directly at the [Releases page](https://github.com/Coo15/System-Information-Collector/releases).
 
-### 7. Our team:
+### 6. Our team:
 | Name              |  Student ID |  Email                        | 
 |-------------------|-------------|-------------------------------|
 | Dao Minh Quang    | 20225552    | quang.dm225552@sis.hust.edu.vn|
 | Vu Duc Thang      | 20225553    | thang.vd225553@sis.hust.edu.vn|
 
-### 8. License
+### 7. License
 Distributed under the MIT License. See [`LICENSE`](https://github.com/Coo15/System-Information-Collector/blob/main/LICENSE) for more information.
